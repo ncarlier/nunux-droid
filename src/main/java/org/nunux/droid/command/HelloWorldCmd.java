@@ -5,10 +5,11 @@
 
 package org.nunux.droid.command;
 
-import org.naturalcli.Command;
-import org.naturalcli.ICommandExecutor;
-import org.naturalcli.InvalidSyntaxException;
-import org.naturalcli.ParseResult;
+
+import java.util.List;
+import org.nunux.droid.command.common.Command;
+import org.nunux.droid.command.common.ICommandExecutor;
+import org.nunux.droid.command.common.InvalidSyntaxException;
 import org.nunux.droid.service.XmppService;
 
 /**
@@ -18,11 +19,13 @@ import org.nunux.droid.service.XmppService;
 public class HelloWorldCmd extends Command {
 
     public HelloWorldCmd(final XmppService service) throws InvalidSyntaxException {
-        super("hello world <name:string>",
+        super("^hello (.+)",
             "Says hello to the world and especially to some one.",
             new ICommandExecutor() {
-                public void execute(ParseResult pr) {
-                    service.send("Hello world! And hello especially to " + pr.getParameterValue(0));
+                public void execute(List<String> args) {
+                    if (args.size() > 0) {
+                        service.send("Hello world! And hello especially to " + args.get(0));
+                    }
                 }
             }
         );

@@ -21,14 +21,14 @@ import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.naturalcli.Command;
-import org.naturalcli.ExecutionException;
-import org.naturalcli.InvalidSyntaxException;
-import org.naturalcli.NaturalCLI;
-import org.naturalcli.commands.HelpCommand;
 import org.nunux.droid.Preferences;
 import org.nunux.droid.R;
 import org.nunux.droid.command.HelloWorldCmd;
+import org.nunux.droid.command.TextToSpeechCmd;
+import org.nunux.droid.command.common.Command;
+import org.nunux.droid.command.common.CommandCLI;
+import org.nunux.droid.command.common.InvalidSyntaxException;
+import org.nunux.droid.tts.TextToSpeechHandle;
 
 /**
  * Xmpp Service
@@ -179,7 +179,8 @@ public class XmppService extends Service {
             mCommands.clear();
             // Register commands...
             mCommands.add(new HelloWorldCmd(this));
-            mCommands.add(new HelpCommand(mCommands));
+            mCommands.add(new TextToSpeechCmd(new TextToSpeechHandle(this)));
+            // mCommands.add(new HelpCommand(mCommands));
             Log.d("Droid", "Commands successfully registered.");
         } catch (InvalidSyntaxException e) {
             Log.e("Droid", "Unable to register commands.", e);
@@ -192,8 +193,8 @@ public class XmppService extends Service {
     private void onCommandReceived(String commandLine) {
         Log.d("Droid", "Command line received: " + commandLine);
         try {
-            new NaturalCLI(mCommands).execute(commandLine);
-        } catch (ExecutionException e) {
+            new CommandCLI(mCommands).execute(commandLine);
+        } catch (InvalidSyntaxException e) {
             Log.e("Droid", "Unable to execute command line: " + commandLine, e);
         }
     }
