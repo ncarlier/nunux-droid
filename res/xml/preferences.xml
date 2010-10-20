@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android" android:key="NunuxDroidPreferences">
+
+    <PreferenceCategory
+        android:title="@string/general_settings" android:key="GeneralSettings">
+        <CheckBoxPreference
+            android:title="@string/activation_title"
+            android:defaultValue="false"
+            android:summaryOff="@string/activation_summary_off"
+            android:summaryOn="@string/activation_summary_on"
+            android:key="activation" />
+
+        <EditTextPreference
+            android:title="@string/ext_xmpp_account_title"
+            android:key="extXmppAccount"
+            android:defaultValue="pouicjabb@jabber.reseaucitoyen.be"
+            android:summary="@string/ext_xmpp_account_summary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/connection_settings" android:key="ConnectionSettings">
+        <EditTextPreference
+            android:key="login"
+            android:title="@string/login_title"
+            android:summary="@string/login_summary"
+            android:defaultValue="nunux"/>
+        <EditTextPreference
+            android:key="password"
+            android:password="true"
+            android:title="@string/password_title"
+            android:summary="@string/password_summary"
+            android:defaultValue="iamabot!"/>
+        <EditTextPreference
+            android:title="@string/server_host_title"
+            android:key="serverHost"
+            android:summary="@string/server_host_summary"
+            android:defaultValue="im.apinc.org"/>
+        <EditTextPreference
+            android:title="@string/server_port_title"
+            android:key="serverPort"
+            android:summary="@string/server_port_summary"
+            android:inputType="number"
+            android:numeric="integer" 
+            android:defaultValue="5222"/>
+        <EditTextPreference
+            android:title="@string/service_name_title"
+            android:key="serviceName"
+            android:summary="@string/service_name_summary"
+            android:defaultValue="im.apinc.org"/>
+        <ListPreference
+            android:title="@string/sasl_mechanism_title"
+            android:summary="@string/sasl_mechanism_summary"
+            android:key="saslMechanism"
+            android:defaultValue="DEFAULT"
+            android:entries="@array/saslMechanism"
+            android:entryValues="@array/saslMechanism" />
+    </PreferenceCategory>
+</PreferenceScreen>
+

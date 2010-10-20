@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Droid</string>
+
+    <string name="remote_service_started">Droid service activated.</string>
+    <string name="remote_service_stopped">Droid service un-activated.</string>
+    <string name="remote_service_label">Droid service</string>
+
+    <string name="connection_settings">Connection settings</string>
+    <string name="login_title">Login</string>
+    <string name="login_summary">Login used by the phone</string>
+    <string name="password_title">Password</string>
+    <string name="password_summary">Password used by the phone</string>
+    <string name="server_host_title">Host</string>
+    <string name="server_host_summary">XMPP server host</string>
+    <string name="server_port_title">Port</string>
+    <string name="server_port_summary">XMPP server port</string>
+    <string name="service_name_title">Service name</string>
+    <string name="service_name_summary">XMPP service name</string>
+    <string name="sasl_mechanism_title">SASL mechanism</string>
+    <string name="sasl_mechanism_summary">SASL mechanism</string>
+
+    <string name="general_settings">General settings</string>
+    <string name="activation_title">Activation</string>
+    <string name="activation_summary_on">Service STARTED</string>
+    <string name="activation_summary_off">Service STOPPED</string>
+    <string name="ext_xmpp_account_title">You</string>
+    <string name="ext_xmpp_account_summary">Your XMPP ID</string>
+</resources>

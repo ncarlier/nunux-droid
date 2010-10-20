@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Used in Perferences -->
+    <string-array name="saslMechanism">
+        <item>DEFAULT</item>
+        <item>PLAIN</item>
+        <item>DIGEST-MD5</item>
+        <item>KERBEROS_V4</item>
+    </string-array>
+</resources>
