@@ -9,6 +9,7 @@
             android:defaultValue="false"
             android:summaryOff="@string/activation_summary_off"
             android:summaryOn="@string/activation_summary_on"
+            android:persistent="false"
             android:key="activation" />
 
         <EditTextPreference
