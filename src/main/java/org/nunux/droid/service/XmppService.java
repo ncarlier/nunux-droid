@@ -23,12 +23,16 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.nunux.droid.Preferences;
 import org.nunux.droid.R;
+import org.nunux.droid.command.CopyCmd;
 import org.nunux.droid.command.HelloWorldCmd;
+import org.nunux.droid.command.HelpCmd;
 import org.nunux.droid.command.TextToSpeechCmd;
+import org.nunux.droid.command.LocationCmd;
+import org.nunux.droid.command.UrlCmd;
 import org.nunux.droid.command.common.Command;
 import org.nunux.droid.command.common.CommandCLI;
 import org.nunux.droid.command.common.InvalidSyntaxException;
-import org.nunux.droid.tts.TextToSpeechHandle;
+import org.nunux.droid.tools.TextToSpeechHandle;
 
 /**
  * Xmpp Service
@@ -40,9 +44,6 @@ public class XmppService extends Service {
 
     /** XMPP connection configuration */
     private ConnectionConfiguration mConnectionConfiguration = null;
-
-    /** Activation parameter */
-    private boolean mActivation;
 
     /** Login parameter */
     private String mLogin;
@@ -102,7 +103,6 @@ public class XmppService extends Service {
         mLogin = prefs.getString(Preferences.KEY_LOGIN_PREFERENCE, "");
         mPassword = prefs.getString(Preferences.KEY_PASSWORD_PREFERENCE, "");
         mExternalXmppAcount = prefs.getString(Preferences.KEY_EXT_XMPP_ACCOUNT_PREFERENCE, "");
-        mActivation = prefs.getBoolean(Preferences.KEY_ACTIVATION_PREFERENCE, false);
         mSaslMechanism = prefs.getString(Preferences.KEY_SASL_MECHANISM_PREFERENCE, "DEFAULT");
     }
 
@@ -173,20 +173,27 @@ public class XmppService extends Service {
     }
 
     /** Register commands. */
-    public void registerCommands() {
+    private void registerCommands() {
         Log.d("Droid", "Registering commands...");
         try {
             mCommands.clear();
             // Register commands...
             mCommands.add(new HelloWorldCmd(this));
+            mCommands.add(new LocationCmd(this));
+            mCommands.add(new UrlCmd(this));
+            mCommands.add(new CopyCmd(this));
             mCommands.add(new TextToSpeechCmd(new TextToSpeechHandle(this)));
-            // mCommands.add(new HelpCommand(mCommands));
+            mCommands.add(new HelpCmd(this));
             Log.d("Droid", "Commands successfully registered.");
         } catch (InvalidSyntaxException e) {
             Log.e("Droid", "Unable to register commands.", e);
             Toast.makeText(getApplicationContext(), "Unable to register commands: " + e.getMessage(), Toast.LENGTH_LONG).show();
             return;
         }
+    }
+
+    public Set<Command> getCommands() {
+        return mCommands;
     }
 
     /** handles commands */
@@ -238,11 +245,9 @@ public class XmppService extends Service {
 
         // then, re-import preferences
         importPreferences();
-        if (!mActivation) {
-            Log.i("Droid", "XmppService not activated. Abort.");
-            onDestroy();
-            return;
-        }
+
+        // start location service
+        this.startService(new Intent(this, LocationService.class));
 
         // and finaly init connection
         initConnection();
@@ -271,6 +276,9 @@ public class XmppService extends Service {
         // We use a string id because it is a unique number.  We use it later to cancel.
         mNM.notify(R.string.remote_service_started, notification);
 
+        // Tell the user we start the service.
+        Toast.makeText(this, R.string.remote_service_started, Toast.LENGTH_SHORT).show();
+
         Log.i("Droid", "XmppService started.");
     }
 
@@ -281,10 +289,13 @@ public class XmppService extends Service {
         // first, clean everything
         clearConnection();
 
+        // stop location service
+        this.stopService(new Intent(this, LocationService.class));
+
         // Cancel the persistent notification.
         mNM.cancel(R.string.remote_service_started);
 
-        // Tell the user we un-activate the service.
+        // Tell the user we stop the service.
         Toast.makeText(this, R.string.remote_service_stopped, Toast.LENGTH_SHORT).show();
 
         Log.d("Droid", "XmppService stopped.");
