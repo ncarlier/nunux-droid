@@ -20,7 +20,7 @@ public class HelloWorldCmd extends Command {
 
     public HelloWorldCmd(final XmppService service) throws InvalidSyntaxException {
         super("^hello (.+)",
-            "Says hello to the world and especially to some one.",
+            "hello <name>\nSays hello to the world and especially to some one.",
             new ICommandExecutor() {
                 public void execute(List<String> args) {
                     if (args.size() > 0) {
