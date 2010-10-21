@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">Droid</string>
 
-    <string name="remote_service_started">Droid service activated.</string>
-    <string name="remote_service_stopped">Droid service un-activated.</string>
+    <string name="remote_service_started">Droid service started</string>
+    <string name="remote_service_stopped">Droid service stopped</string>
     <string name="remote_service_label">Droid service</string>
 
     <string name="connection_settings">Connection settings</string>
