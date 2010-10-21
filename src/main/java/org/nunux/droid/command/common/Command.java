@@ -78,7 +78,9 @@ public class Command {
         Matcher matcher = this.syntaxPattern.matcher(commandLine);
 
         while (matcher.find()) {
-            args.add(matcher.group(1));
+            if (matcher.groupCount() >= 1 ) {
+                args.add(matcher.group(1));
+            }
         }
         return args;
     }
