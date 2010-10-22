@@ -28,6 +28,7 @@ import org.nunux.droid.command.HelloWorldCmd;
 import org.nunux.droid.command.HelpCmd;
 import org.nunux.droid.command.TextToSpeechCmd;
 import org.nunux.droid.command.LocationCmd;
+import org.nunux.droid.command.SmsCmd;
 import org.nunux.droid.command.UrlCmd;
 import org.nunux.droid.command.common.Command;
 import org.nunux.droid.command.common.CommandCLI;
@@ -182,6 +183,7 @@ public class XmppService extends Service {
             mCommands.add(new LocationCmd(this));
             mCommands.add(new UrlCmd(this));
             mCommands.add(new CopyCmd(this));
+            mCommands.add(new SmsCmd(this));
             mCommands.add(new TextToSpeechCmd(new TextToSpeechHandle(this)));
             mCommands.add(new HelpCmd(this));
             Log.d("Droid", "Commands successfully registered.");

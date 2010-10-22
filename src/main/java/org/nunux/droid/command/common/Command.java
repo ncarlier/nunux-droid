@@ -78,8 +78,8 @@ public class Command {
         Matcher matcher = this.syntaxPattern.matcher(commandLine);
 
         while (matcher.find()) {
-            if (matcher.groupCount() >= 1 ) {
-                args.add(matcher.group(1));
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                args.add(matcher.group(i));
             }
         }
         return args;
