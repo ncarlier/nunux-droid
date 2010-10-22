@@ -5,7 +5,7 @@
 package org.nunux.droid.command.common;
 
 import android.util.Log;
-import java.util.Set;
+import java.util.List;
 
 /**
  *
@@ -13,14 +13,14 @@ import java.util.Set;
  */
 public class CommandCLI {
 
-    private Set<Command> commands;
+    private List<Command> commands;
 
     /**
      * Creates a new instance.
      *
-     * @param commands the set of commands that can be executed.
+     * @param commands the list of commands that can be executed.
      */
-    public CommandCLI(Set<Command> commands) {
+    public CommandCLI(List<Command> commands) {
         this.commands = commands;
     }
 

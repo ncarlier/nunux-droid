@@ -10,8 +10,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SASLAuthentication;
@@ -25,15 +24,14 @@ import org.nunux.droid.Preferences;
 import org.nunux.droid.R;
 import org.nunux.droid.command.CopyCmd;
 import org.nunux.droid.command.HelloWorldCmd;
-import org.nunux.droid.command.HelpCmd;
-import org.nunux.droid.command.TextToSpeechCmd;
 import org.nunux.droid.command.LocationCmd;
 import org.nunux.droid.command.SmsCmd;
+import org.nunux.droid.command.TextToSpeechCmd;
 import org.nunux.droid.command.UrlCmd;
 import org.nunux.droid.command.common.Command;
 import org.nunux.droid.command.common.CommandCLI;
 import org.nunux.droid.command.common.InvalidSyntaxException;
-import org.nunux.droid.tools.TextToSpeechHandle;
+import org.nunux.droid.tools.CommandRegistrationHelper;
 
 /**
  * Xmpp Service
@@ -45,6 +43,8 @@ public class XmppService extends Service {
 
     /** XMPP connection configuration */
     private ConnectionConfiguration mConnectionConfiguration = null;
+
+    private CommandRegistrationHelper mCommandRegistrationHelper = null;
 
     /** Login parameter */
     private String mLogin;
@@ -63,9 +63,6 @@ public class XmppService extends Service {
 
     /** Packet Listener */
     private PacketListener mPacketListener = null;
-
-    /** Commands */
-    private Set<Command> mCommands = new HashSet<Command>();
 
     // This is the old onStart method that will be called on the pre-2.0
     // platform.  On 2.0 or later we override onStartCommand() so this
@@ -176,33 +173,37 @@ public class XmppService extends Service {
     /** Register commands. */
     private void registerCommands() {
         Log.d("Droid", "Registering commands...");
-        try {
-            mCommands.clear();
-            // Register commands...
-            mCommands.add(new HelloWorldCmd(this));
-            mCommands.add(new LocationCmd(this));
-            mCommands.add(new UrlCmd(this));
-            mCommands.add(new CopyCmd(this));
-            mCommands.add(new SmsCmd(this));
-            mCommands.add(new TextToSpeechCmd(new TextToSpeechHandle(this)));
-            mCommands.add(new HelpCmd(this));
-            Log.d("Droid", "Commands successfully registered.");
-        } catch (InvalidSyntaxException e) {
-            Log.e("Droid", "Unable to register commands.", e);
-            Toast.makeText(getApplicationContext(), "Unable to register commands: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            return;
-        }
+//        try {
+//            mCommandRegister = new CommandRegistrationHelper("org.nunux.droid.command", this);
+            mCommandRegistrationHelper = new CommandRegistrationHelper(this,
+                    CopyCmd.class,
+                    HelloWorldCmd.class,
+                    LocationCmd.class,
+                    SmsCmd.class,
+                    TextToSpeechCmd.class,
+                    UrlCmd.class);
+//        } catch (ClassNotFoundException ex) {
+//            Log.e("Droid", "Unable to register commands.", ex);
+//            Toast.makeText(getApplicationContext(), "Unable to register commands: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+//            return;
+//        } catch (IOException ex) {
+//            Log.e("Droid", "Unable to register commands.", ex);
+//            Toast.makeText(getApplicationContext(), "Unable to register commands: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+//            return;
+//        }
+        Log.d("Droid", mCommandRegistrationHelper.getCommands().size() + " command(s) successfully registered.");
     }
 
-    public Set<Command> getCommands() {
-        return mCommands;
+    /** @retun regitered commands.*/
+    public List<Command> getCommands() {
+        return mCommandRegistrationHelper.getCommands();
     }
 
     /** handles commands */
     private void onCommandReceived(String commandLine) {
         Log.d("Droid", "Command line received: " + commandLine);
         try {
-            new CommandCLI(mCommands).execute(commandLine);
+            new CommandCLI(getCommands()).execute(commandLine);
         } catch (InvalidSyntaxException e) {
             Log.e("Droid", "Unable to execute command line: " + commandLine, e);
         }

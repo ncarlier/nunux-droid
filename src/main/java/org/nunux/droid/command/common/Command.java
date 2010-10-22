@@ -52,9 +52,6 @@ public class Command {
         if (syntax == null || syntax.length() == 0) {
             throw new IllegalArgumentException("Syntax cannot be empty.");
         }
-        if (ce == null) {
-            throw new IllegalArgumentException("Command executor cannot be null.");
-        }
         this.help = help;
         this.syntaxPattern = Pattern.compile(syntax);
         this.executor = ce;
@@ -102,4 +99,10 @@ public class Command {
     public ICommandExecutor getExecutor() {
         return executor;
     }
+
+    protected void setCommandExecutor(ICommandExecutor executor) {
+        this.executor = executor;
+    }
+
+
 }
