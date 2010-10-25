@@ -22,8 +22,10 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.nunux.droid.Preferences;
 import org.nunux.droid.R;
+import org.nunux.droid.command.AlarmCmd;
 import org.nunux.droid.command.CopyCmd;
 import org.nunux.droid.command.HelloWorldCmd;
+import org.nunux.droid.command.HelpCmd;
 import org.nunux.droid.command.LocationCmd;
 import org.nunux.droid.command.SmsCmd;
 import org.nunux.droid.command.TextToSpeechCmd;
@@ -176,12 +178,14 @@ public class XmppService extends Service {
 //        try {
 //            mCommandRegister = new CommandRegistrationHelper("org.nunux.droid.command", this);
             mCommandRegistrationHelper = new CommandRegistrationHelper(this,
+                    AlarmCmd.class,
                     CopyCmd.class,
                     HelloWorldCmd.class,
                     LocationCmd.class,
                     SmsCmd.class,
                     TextToSpeechCmd.class,
-                    UrlCmd.class);
+                    UrlCmd.class,
+                    HelpCmd.class);
 //        } catch (ClassNotFoundException ex) {
 //            Log.e("Droid", "Unable to register commands.", ex);
 //            Toast.makeText(getApplicationContext(), "Unable to register commands: " + ex.getMessage(), Toast.LENGTH_LONG).show();
