@@ -3,7 +3,8 @@
      package="org.nunux.droid">
     <application android:name="DroidApplication"
             android:label="@string/app_name"
-            android:icon="@drawable/icon">
+            android:icon="@drawable/icon"
+            android:debuggable="true">
         <activity android:name=".Preferences" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

@@ -12,10 +12,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.provider.Settings;
 import android.util.Log;
 import java.lang.reflect.Method;
-import org.nunux.droid.tools.LocationHandle;
 
 /**
  *
@@ -30,7 +30,12 @@ public class LocationService extends Service {
 
     @Override
     public IBinder onBind(Intent arg0) {
-        return null;
+        handleStart();
+        return new ILocationService.Stub() {
+            public Location getCurrentLocation() throws RemoteException {
+                return currentBestLocation;
+            }
+        };
     }
 
     @Override
@@ -81,8 +86,12 @@ public class LocationService extends Service {
 
     @Override
     public void onStart(final Intent intent, int startId) {
-        Log.i("Droid", "Starting LocationService...");
         super.onStart(intent, startId);
+        handleStart();
+    }
+
+    public void handleStart() {
+        Log.i("Droid", "Starting LocationService...");
 
         try {
             if (!getGPSStatus()) {
@@ -95,7 +104,6 @@ public class LocationService extends Service {
             public void onLocationChanged(Location location) {
                 if (isBetterLocation(location, currentBestLocation)) {
                     currentBestLocation = location;
-                    LocationHandle.getInstance().updateCurrentLocation(currentBestLocation);
                 }
             }
 
@@ -113,13 +121,12 @@ public class LocationService extends Service {
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
 
-        Location location = mLocationManager.getLastKnownLocation("gps");
+        Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location == null) {
-            location = mLocationManager.getLastKnownLocation("network");
+            location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             if (location != null) {
                 if (isBetterLocation(location, currentBestLocation)) {
                     currentBestLocation = location;
-                    LocationHandle.getInstance().updateCurrentLocation(currentBestLocation);
                 }
             }
         }

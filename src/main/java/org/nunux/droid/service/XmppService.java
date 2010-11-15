@@ -5,8 +5,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.Service;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -65,6 +69,25 @@ public class XmppService extends Service {
 
     /** Packet Listener */
     private PacketListener mPacketListener = null;
+    
+    /** Location Service */
+    private ILocationService locationService;
+
+    /** Location Service connection */
+    private LocationServiceConnection locationServiceConnection;
+
+    class LocationServiceConnection implements ServiceConnection {
+
+        public void onServiceConnected(ComponentName name, IBinder boundService) {
+            locationService = ILocationService.Stub.asInterface((IBinder) boundService);
+            Log.d("Droid", "onServiceConnected() connected");
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            locationService = null;
+            Log.d("Droid", "onServiceDisconnected() disconnected");
+        }
+    }
 
     // This is the old onStart method that will be called on the pre-2.0
     // platform.  On 2.0 or later we override onStartCommand() so this
@@ -254,7 +277,10 @@ public class XmppService extends Service {
         importPreferences();
 
         // start location service
-        this.startService(new Intent(this, LocationService.class));
+        // this.startService(new Intent(this, LocationService.class));
+        locationServiceConnection = new LocationServiceConnection();
+        boolean ret = bindService(new Intent(this, LocationService.class), locationServiceConnection, Context.BIND_AUTO_CREATE);
+        Log.d("Droid", "Doid service bound with Location service:" + ret);
 
         // and finaly init connection
         initConnection();
@@ -297,7 +323,10 @@ public class XmppService extends Service {
         clearConnection();
 
         // stop location service
-        this.stopService(new Intent(this, LocationService.class));
+        unbindService(locationServiceConnection);
+        locationServiceConnection = null;
+        Log.d("Droid", "Location service unbound.");
+        //this.stopService(new Intent(this, LocationService.class));
 
         // Cancel the persistent notification.
         mNM.cancel(R.string.remote_service_started);
@@ -306,5 +335,9 @@ public class XmppService extends Service {
         Toast.makeText(this, R.string.remote_service_stopped, Toast.LENGTH_SHORT).show();
 
         Log.d("Droid", "XmppService stopped.");
+    }
+
+    public ILocationService getLocationService() {
+        return locationService;
     }
 }
