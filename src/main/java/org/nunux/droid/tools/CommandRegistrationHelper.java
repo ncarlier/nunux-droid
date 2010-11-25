@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.nunux.droid.tools;
 
 import android.util.Log;
@@ -14,41 +10,46 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import org.nunux.droid.command.common.Command;
-import org.nunux.droid.service.XmppService;
+import org.nunux.droid.service.DroidService;
 
 /**
- *
- * @author fr23972
+ * Command registration helper.
+ * @author Nicolas Carlier
  */
 public class CommandRegistrationHelper {
     List<Command> commands;
 
-    public CommandRegistrationHelper(XmppService service, Class... classes) {
+    /**
+     * Constroctor.
+     * @param service Droid service
+     * @param classes commands
+     */
+    public CommandRegistrationHelper(DroidService service, Class... classes) {
         commands = new ArrayList<Command>();
         for (Class clazz : classes) {
             Constructor constructor;
             try {
-                constructor = clazz.getConstructor(new Class[]{XmppService.class});
+                constructor = clazz.getConstructor(new Class[]{DroidService.class});
             } catch (NoSuchMethodException ex) {
-                Log.e("Droid", "Unable to call command constructor: " + clazz.getName(), ex);
+                Log.e(DroidService.TAG, "Unable to call command constructor: " + clazz.getName(), ex);
                 continue;
             } catch (SecurityException ex) {
-                Log.e("Droid", "Unauthorise to call command constructor: " + clazz.getName(), ex);
+                Log.e(DroidService.TAG, "Unauthorise to call command constructor: " + clazz.getName(), ex);
                 continue;
             }
 
             try {
                 Command command = (Command) constructor.newInstance(service);
                 commands.add(command);
-                Log.d("Droid", "Command found: " + command.getHelp());
+                Log.d(DroidService.TAG, "Command found: " + command.getHelp());
             } catch (InstantiationException ex) {
-                Log.e("Droid", "Unable to instantiate command: " + clazz.getName(), ex);
+                Log.e(DroidService.TAG, "Unable to instantiate command: " + clazz.getName(), ex);
             } catch (IllegalAccessException ex) {
-                Log.e("Droid", "Unable to instantiate command: " + clazz.getName(), ex);
+                Log.e(DroidService.TAG, "Unable to instantiate command: " + clazz.getName(), ex);
             } catch (IllegalArgumentException ex) {
-                Log.e("Droid", "Unable to instantiate command: " + clazz.getName(), ex);
+                Log.e(DroidService.TAG, "Unable to instantiate command: " + clazz.getName(), ex);
             } catch (InvocationTargetException ex) {
-               Log.e("Droid", "Unable to instantiate command: " + clazz.getName(), ex);
+               Log.e(DroidService.TAG, "Unable to instantiate command: " + clazz.getName(), ex);
             }
         }
     }
@@ -60,14 +61,14 @@ public class CommandRegistrationHelper {
      * @throws ClassNotFoundException
      * @throws IOException
      */
-    public CommandRegistrationHelper(String packageName, XmppService service) throws ClassNotFoundException, IOException {
-        Log.d("Droid", "CommandRegister. Check package: " + packageName);
+    public CommandRegistrationHelper(String packageName, DroidService service) throws ClassNotFoundException, IOException {
+        Log.d(DroidService.TAG, "CommandRegister. Check package: " + packageName);
         commands = new ArrayList<Command>();
 
         List<Class> commandClasses = new ArrayList<Class>();
         Class[] classes = CommandRegistrationHelper.getClasses(packageName, service.getClassLoader());
         for (Class clazz : classes) {
-            Log.d("Droid", "CommandRegister. Check class: " + clazz.getName() +
+            Log.d(DroidService.TAG, "CommandRegister. Check class: " + clazz.getName() +
                     " extends " + clazz.getSuperclass().getName());
             if (clazz.getSuperclass().getName().equals(Command.class.getName())) {
                 commandClasses.add(clazz);
@@ -77,32 +78,32 @@ public class CommandRegistrationHelper {
         for (Class commandClass : commandClasses) {
             Constructor constructor;
             try {
-                constructor = commandClass.getConstructor(new Class[]{XmppService.class});
+                constructor = commandClass.getConstructor(new Class[]{DroidService.class});
             } catch (NoSuchMethodException ex) {
-                Log.e("Droid", "Unable to call command constructor: " + commandClass.getName(), ex);
+                Log.e(DroidService.TAG, "Unable to call command constructor: " + commandClass.getName(), ex);
                 continue;
             } catch (SecurityException ex) {
-                Log.e("Droid", "Unauthorise to call command constructor: " + commandClass.getName(), ex);
+                Log.e(DroidService.TAG, "Unauthorise to call command constructor: " + commandClass.getName(), ex);
                 continue;
             }
 
             try {
                 Command command = (Command) constructor.newInstance(service);
                 commands.add(command);
-                Log.d("Droid", "Command found: " + command.getHelp());
+                Log.d(DroidService.TAG, "Command found: " + command.getHelp());
             } catch (InstantiationException ex) {
-                Log.e("Droid", "Unable to instantiate command: " + commandClass.getName(), ex);
+                Log.e(DroidService.TAG, "Unable to instantiate command: " + commandClass.getName(), ex);
             } catch (IllegalAccessException ex) {
-                Log.e("Droid", "Unable to instantiate command: " + commandClass.getName(), ex);
+                Log.e(DroidService.TAG, "Unable to instantiate command: " + commandClass.getName(), ex);
             } catch (IllegalArgumentException ex) {
-                Log.e("Droid", "Unable to instantiate command: " + commandClass.getName(), ex);
+                Log.e(DroidService.TAG, "Unable to instantiate command: " + commandClass.getName(), ex);
             } catch (InvocationTargetException ex) {
-               Log.e("Droid", "Unable to instantiate command: " + commandClass.getName(), ex);
+               Log.e(DroidService.TAG, "Unable to instantiate command: " + commandClass.getName(), ex);
             }
         }
     }
 
-    public List<Command> getCommands() {
+    public final List<Command> getCommands() {
         return commands;
     }
 
@@ -124,7 +125,7 @@ public class CommandRegistrationHelper {
             URL resource = resources.nextElement();
             dirs.add(new File(resource.getFile()));
         }
-        Log.d("Droid", "CommandRegister. Founded ressources: " + dirs.size());
+        Log.d(DroidService.TAG, "CommandRegister. Founded ressources: " + dirs.size());
         ArrayList<Class> classes = new ArrayList<Class>();
         for (File directory : dirs) {
             classes.addAll(findClasses(directory, packageName));
@@ -152,7 +153,7 @@ public class CommandRegistrationHelper {
                 classes.addAll(findClasses(file, packageName + "." + file.getName()));
             } else if (file.getName().endsWith(".class")) {
                 classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
-                Log.d("Droid", "CommandRegister. Founded class: " + file.getName());
+                Log.d(DroidService.TAG, "CommandRegister. Founded class: " + file.getName());
             }
         }
         return classes;

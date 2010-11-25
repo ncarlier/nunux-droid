@@ -1,10 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.nunux.droid.command;
-
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -14,17 +8,17 @@ import java.util.List;
 import org.nunux.droid.command.common.Command;
 import org.nunux.droid.command.common.ICommandExecutor;
 import org.nunux.droid.command.common.InvalidSyntaxException;
-import org.nunux.droid.service.XmppService;
+import org.nunux.droid.service.DroidService;
 
 /**
- *
+ * Alarm command.
  * @author Nicolas Carlier
  */
 public class AlarmCmd extends Command {
 
     MediaPlayer mMediaPlayer = null;
 
-    public AlarmCmd(final XmppService service) throws InvalidSyntaxException {
+    public AlarmCmd(final DroidService service) throws InvalidSyntaxException {
         super("^alarm (start|stop)$",
             "alarm <start|stop>\nStart or stop ringing the phone.",
             null);
@@ -35,7 +29,7 @@ public class AlarmCmd extends Command {
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
             mMediaPlayer.setLooping(true);
         } catch (Exception e) {
-            Log.e("Droid", "Unable to initiate MediaPlayer. Alarm command will not run.", e);
+            Log.e(DroidService.TAG, "Unable to initiate MediaPlayer. Alarm command will not run.", e);
             mMediaPlayer = null;
         }
 
@@ -51,7 +45,7 @@ public class AlarmCmd extends Command {
                             try {
                                 mMediaPlayer.prepare();
                             } catch (Exception e) {
-                                Log.e("Droid", "Unable to prepare MediaPlayer. Alarm command will not run.", e);
+                                Log.e(DroidService.TAG, "Unable to prepare MediaPlayer. Alarm command will not run.", e);
                                 service.send("Sorry. Unable to run this command. Check device logs.");
                             }
                             mMediaPlayer.start();

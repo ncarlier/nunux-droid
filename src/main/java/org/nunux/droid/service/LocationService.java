@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.nunux.droid.service;
 
 import android.app.Service;
@@ -18,8 +14,8 @@ import android.util.Log;
 import java.lang.reflect.Method;
 
 /**
- *
- * @author fr23972
+ * Location service.
+ * @author Nicolas Carlier
  */
 public class LocationService extends Service {
 
@@ -43,9 +39,6 @@ public class LocationService extends Service {
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
-    /*
-     * http://www.maximyudin.com/2008/12/07/android/vklyuchenievyklyuchenie-gps-na-g1-programmno/
-     */
     private boolean getGPSStatus() {
         String allowedLocationProviders =
                 Settings.Secure.getString(getContentResolver(),
@@ -91,13 +84,14 @@ public class LocationService extends Service {
     }
 
     public void handleStart() {
-        Log.i("Droid", "Starting LocationService...");
+        Log.i(DroidService.TAG, "Starting LocationService...");
 
         try {
             if (!getGPSStatus()) {
                 setGPSStatus(true);
             }
         } catch (Exception e) {
+            Log.e(DroidService.TAG, "Unable to get GPS status.", e);
         }
         mLocationListener = new LocationListener() {
 
@@ -117,7 +111,6 @@ public class LocationService extends Service {
             }
         };
 
-        // We query every available location providers
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
 
@@ -130,7 +123,7 @@ public class LocationService extends Service {
                 }
             }
         }
-        Log.i("Droid", "LoactionService started.");
+        Log.i(DroidService.TAG, "LoactionService started.");
     }
 
     @Override

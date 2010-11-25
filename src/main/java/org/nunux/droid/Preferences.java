@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.nunux.droid;
 
 import android.content.Intent;
@@ -12,11 +8,11 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import org.nunux.droid.service.XmppService;
+import org.nunux.droid.service.DroidService;
 import org.nunux.droid.tools.ServiceToolkit;
 
 /**
- *
+ * Preferences screen.
  * @author Nicolas Carlier
  */
 public class Preferences extends PreferenceActivity
@@ -44,15 +40,15 @@ public class Preferences extends PreferenceActivity
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Boolean activating = (Boolean) newValue;
                 if (activating.booleanValue()) {
-                    stopService(new Intent(getApplicationContext(), XmppService.class));
-                    startService(new Intent(getApplicationContext(), XmppService.class));
+                    stopService(new Intent(getApplicationContext(), DroidService.class));
+                    startService(new Intent(getApplicationContext(), DroidService.class));
                 } else {
-                    stopService(new Intent(getApplicationContext(), XmppService.class));
+                    stopService(new Intent(getApplicationContext(), DroidService.class));
                 }
                 return true;
             }
         });
-        cbp.setChecked(ServiceToolkit.isServiceExisted(this, XmppService.class.getName()) != null);
+        cbp.setChecked(ServiceToolkit.isServiceExisted(this, DroidService.class.getName()) != null);
 
         for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
             Preference pref = getPreferenceScreen().getPreference(i);

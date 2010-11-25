@@ -1,10 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.nunux.droid.command;
-
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,15 +6,15 @@ import java.util.List;
 import org.nunux.droid.command.common.Command;
 import org.nunux.droid.command.common.ICommandExecutor;
 import org.nunux.droid.command.common.InvalidSyntaxException;
-import org.nunux.droid.service.XmppService;
+import org.nunux.droid.service.DroidService;
 
 /**
- *
+ * URL command.
  * @author Nicolas Carlier
  */
 public class UrlCmd extends Command {
 
-    public UrlCmd(final XmppService service) throws InvalidSyntaxException {
+    public UrlCmd(final DroidService service) throws InvalidSyntaxException {
         super("^(https?://.+)$",
             "<URL>\nOpen URL into devide browser.",
             new ICommandExecutor() {

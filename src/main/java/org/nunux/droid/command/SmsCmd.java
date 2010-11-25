@@ -1,10 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.nunux.droid.command;
-
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -13,15 +7,15 @@ import java.util.List;
 import org.nunux.droid.command.common.Command;
 import org.nunux.droid.command.common.ICommandExecutor;
 import org.nunux.droid.command.common.InvalidSyntaxException;
-import org.nunux.droid.service.XmppService;
+import org.nunux.droid.service.DroidService;
 
 /**
- *
+ * SMS command.
  * @author Nicolas Carlier
  */
 public class SmsCmd extends Command {
 
-    public SmsCmd(final XmppService service) throws InvalidSyntaxException {
+    public SmsCmd(final DroidService service) throws InvalidSyntaxException {
         super("^sms ([0-9]+) (.+)",
             "sms <num> <text>\nSend a SMS to a phone number.",
             new ICommandExecutor() {

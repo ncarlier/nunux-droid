@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.nunux.droid.tools;
 
 import android.app.ActivityManager;
@@ -12,8 +7,8 @@ import android.content.Context;
 import java.util.List;
 
 /**
- *
- * @author fr23972
+ * Toolkit.
+ * @author Nicolas Carlier
  */
 public class ServiceToolkit {
 

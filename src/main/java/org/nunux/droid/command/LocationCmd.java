@@ -1,24 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.nunux.droid.command;
 
 import android.location.Location;
 import android.os.RemoteException;
+import android.util.Log;
 import java.util.List;
 import org.nunux.droid.command.common.Command;
 import org.nunux.droid.command.common.ICommandExecutor;
 import org.nunux.droid.command.common.InvalidSyntaxException;
-import org.nunux.droid.service.XmppService;
+import org.nunux.droid.service.DroidService;
 
 /**
- *
+ * Geolocalization command.
  * @author Nicolas Carlier
  */
 public class LocationCmd extends Command {
 
-    public LocationCmd(final XmppService service) throws InvalidSyntaxException {
+    public LocationCmd(final DroidService service) throws InvalidSyntaxException {
         super("^location$",
                 "location\nLocate the phone and return google maps link.",
                 new ICommandExecutor() {
@@ -28,6 +25,7 @@ public class LocationCmd extends Command {
                              String url = LocationCmd.getGoogleMapUrl(location);
                              service.send(url != null ? url : "Location unavailabe.");
                         } catch (RemoteException ex) {
+                            Log.e(DroidService.TAG, "Location unavailabe.", ex);
                             service.send("Location unavailabe: " + ex.getMessage());
                         }
                     }

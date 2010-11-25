@@ -1,15 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.nunux.droid.command.common;
 
-import android.util.Log;
 import java.util.List;
 
 /**
- *
- * @author fr23972
+ * Command-line interface.
+ * @author Nicolas Carlier
  */
 public class CommandCLI {
 
@@ -17,7 +12,6 @@ public class CommandCLI {
 
     /**
      * Creates a new instance.
-     *
      * @param commands the list of commands that can be executed.
      */
     public CommandCLI(List<Command> commands) {
@@ -25,11 +19,9 @@ public class CommandCLI {
     }
 
     /**
-     * Runs a command based on the arguments.
-     *
-     * @param args  the arguments to be parsed
-     * @param first the index on <code>args</code> of the first string for the arguments.
-     * @throws ExecutionException
+     * Runs a command based on the command line.
+     * @param commandLine the command line
+     * @throws InvalidSyntaxException
      */
     public void execute(String commandLine) throws InvalidSyntaxException {
         if (commandLine == null) {
@@ -49,7 +41,6 @@ public class CommandCLI {
         if (command == null) {
             throw new InvalidSyntaxException("No command matches: " + commandLine);
         }
-        Log.d("Droid", "Command received: " + commandLine);
         // Execute the command
         command.getExecutor().execute(command.extractParameters(commandLine));
     }

@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -28,7 +27,6 @@ import org.nunux.droid.Preferences;
 import org.nunux.droid.R;
 import org.nunux.droid.command.AlarmCmd;
 import org.nunux.droid.command.CopyCmd;
-import org.nunux.droid.command.HelloWorldCmd;
 import org.nunux.droid.command.HelpCmd;
 import org.nunux.droid.command.LocationCmd;
 import org.nunux.droid.command.SmsCmd;
@@ -40,16 +38,19 @@ import org.nunux.droid.command.common.InvalidSyntaxException;
 import org.nunux.droid.tools.CommandRegistrationHelper;
 
 /**
- * Xmpp Service
+ * Droid Service
  * @author Nicolas Carlier
  */
-public class XmppService extends Service {
+public class DroidService extends Service {
+    public final static String TAG = "DOID";
+
     /** For showing and hiding our notification. */
     NotificationManager mNM;
 
     /** XMPP connection configuration */
     private ConnectionConfiguration mConnectionConfiguration = null;
 
+    /** Command registration helper */
     private CommandRegistrationHelper mCommandRegistrationHelper = null;
 
     /** Login parameter */
@@ -80,12 +81,12 @@ public class XmppService extends Service {
 
         public void onServiceConnected(ComponentName name, IBinder boundService) {
             locationService = ILocationService.Stub.asInterface((IBinder) boundService);
-            Log.d("Droid", "onServiceConnected() connected");
+            Log.d(TAG, "onServiceConnected() connected");
         }
 
         public void onServiceDisconnected(ComponentName name) {
             locationService = null;
-            Log.d("Droid", "onServiceDisconnected() disconnected");
+            Log.d(TAG, "onServiceDisconnected() disconnected");
         }
     }
 
@@ -135,13 +136,13 @@ public class XmppService extends Service {
             importPreferences();
         }
 
-        Log.d("Droid", "Connecting to XMPP server [" + mConnectionConfiguration.getHost() + "]...");
+        Log.d(TAG, "Connecting to XMPP server [" + mConnectionConfiguration.getHost() + "]...");
         mConnection = new XMPPConnection(mConnectionConfiguration);
         try {
             mConnection.connect();
-            Log.d("Droid", "Successfully connected to XMPP server [" + mConnectionConfiguration.getHost() + "].");
+            Log.d(TAG, "Successfully connected to XMPP server [" + mConnectionConfiguration.getHost() + "].");
         } catch (XMPPException e) {
-            Log.e("Droid", "Unable to connect to XMPP server [" + mConnectionConfiguration.getHost() + "].", e);
+            Log.e(TAG, "Unable to connect to XMPP server [" + mConnectionConfiguration.getHost() + "].", e);
             Toast.makeText(getApplicationContext(), "Connection failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             return;
         }
@@ -150,12 +151,12 @@ public class XmppService extends Service {
             SASLAuthentication.supportSASLMechanism(mSaslMechanism, 0);
         }
 
-        Log.d("Droid", "Login in...");
+        Log.d(TAG, "Login in...");
         try {
             mConnection.login(mLogin, mPassword);
-            Log.d("Droid", "Successfully logged.");
+            Log.d(TAG, "Successfully logged.");
         } catch (XMPPException e) {
-            Log.e("Droid", "Login failed.", e);
+            Log.e(TAG, "Login failed.", e);
             Toast.makeText(getApplicationContext(), "Login failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             return;
         }
@@ -176,7 +177,7 @@ public class XmppService extends Service {
         };
 
         mConnection.addPacketListener(mPacketListener, filter);
-        Log.d("Droid", "Ready to receive inbound messages.");
+        Log.d(TAG, "Ready to receive inbound messages.");
     }
 
     /** clears the XMPP connection */
@@ -197,28 +198,27 @@ public class XmppService extends Service {
 
     /** Register commands. */
     private void registerCommands() {
-        Log.d("Droid", "Registering commands...");
+        Log.d(TAG, "Registering commands...");
 //        try {
 //            mCommandRegister = new CommandRegistrationHelper("org.nunux.droid.command", this);
             mCommandRegistrationHelper = new CommandRegistrationHelper(this,
                     AlarmCmd.class,
                     CopyCmd.class,
-                    HelloWorldCmd.class,
                     LocationCmd.class,
                     SmsCmd.class,
                     TextToSpeechCmd.class,
                     UrlCmd.class,
                     HelpCmd.class);
 //        } catch (ClassNotFoundException ex) {
-//            Log.e("Droid", "Unable to register commands.", ex);
+//            Log.e(TAG, "Unable to register commands.", ex);
 //            Toast.makeText(getApplicationContext(), "Unable to register commands: " + ex.getMessage(), Toast.LENGTH_LONG).show();
 //            return;
 //        } catch (IOException ex) {
-//            Log.e("Droid", "Unable to register commands.", ex);
+//            Log.e(TAG, "Unable to register commands.", ex);
 //            Toast.makeText(getApplicationContext(), "Unable to register commands: " + ex.getMessage(), Toast.LENGTH_LONG).show();
 //            return;
 //        }
-        Log.d("Droid", mCommandRegistrationHelper.getCommands().size() + " command(s) successfully registered.");
+        Log.d(TAG, mCommandRegistrationHelper.getCommands().size() + " command(s) successfully registered.");
     }
 
     /** @retun regitered commands.*/
@@ -228,16 +228,17 @@ public class XmppService extends Service {
 
     /** handles commands */
     private void onCommandReceived(String commandLine) {
-        Log.d("Droid", "Command line received: " + commandLine);
+        Log.d(TAG, "Command line received: " + commandLine);
         try {
             new CommandCLI(getCommands()).execute(commandLine);
         } catch (InvalidSyntaxException e) {
-            Log.e("Droid", "Unable to execute command line: " + commandLine, e);
+            Log.e(TAG, "Unable to execute command line: " + commandLine, e);
         }
     }
 
     /**
-     * {@inheritDoc}
+     * Test if the XMPP connection is established.
+     * @return <code>true</code> if connected, <code>false</code> else.
      */
     public boolean isConnected() {
         return (mConnection != null
@@ -245,12 +246,14 @@ public class XmppService extends Service {
                 && mConnection.isAuthenticated());
     }
 
+
     /**
-     * {@inheritDoc}
+     * Send XMPP message.
+     * @param message the message
      */
     public void send(String message) {
         if (isConnected()) {
-            Log.d("Droid", "Sending back message: " + message);
+            Log.d(TAG, "Sending back message: " + message);
             Message msg = new Message(mExternalXmppAcount, Message.Type.chat);
             msg.setBody(message);
             mConnection.sendPacket(msg);
@@ -263,7 +266,7 @@ public class XmppService extends Service {
      * @param startId start id
      */
     private void handleStart(Intent intent, int startId) {
-        Log.i("Droid", "Starting XmppService...");
+        Log.i(TAG, "Starting DroidService...");
 
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
@@ -277,16 +280,15 @@ public class XmppService extends Service {
         importPreferences();
 
         // start location service
-        // this.startService(new Intent(this, LocationService.class));
         locationServiceConnection = new LocationServiceConnection();
         boolean ret = bindService(new Intent(this, LocationService.class), locationServiceConnection, Context.BIND_AUTO_CREATE);
-        Log.d("Droid", "Doid service bound with Location service:" + ret);
+        Log.d(TAG, "Doid service bound with Location service:" + ret);
 
         // and finaly init connection
         initConnection();
 
         if (!isConnected()) {
-            Log.e("Droid", "Unable to activate XmppService. Abort.");
+            Log.e(TAG, "Unable to start DroidService. Abort.");
             onDestroy();
             return;
         }
@@ -312,12 +314,12 @@ public class XmppService extends Service {
         // Tell the user we start the service.
         Toast.makeText(this, R.string.remote_service_started, Toast.LENGTH_SHORT).show();
 
-        Log.i("Droid", "XmppService started.");
+        Log.i(TAG, "DroidService started.");
     }
 
     /** Stop service. */
     private void handleStop() {
-        Log.i("Droid", "Stopping XmppService...");
+        Log.i(TAG, "Stopping DroidService...");
 
         // first, clean everything
         clearConnection();
@@ -325,7 +327,7 @@ public class XmppService extends Service {
         // stop location service
         unbindService(locationServiceConnection);
         locationServiceConnection = null;
-        Log.d("Droid", "Location service unbound.");
+        Log.d(TAG, "Location service unbound.");
         //this.stopService(new Intent(this, LocationService.class));
 
         // Cancel the persistent notification.
@@ -334,7 +336,7 @@ public class XmppService extends Service {
         // Tell the user we stop the service.
         Toast.makeText(this, R.string.remote_service_stopped, Toast.LENGTH_SHORT).show();
 
-        Log.d("Droid", "XmppService stopped.");
+        Log.d(TAG, "DroidService stopped.");
     }
 
     public ILocationService getLocationService() {

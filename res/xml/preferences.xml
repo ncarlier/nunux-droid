@@ -30,7 +30,7 @@
             android:password="true"
             android:title="@string/password_title"
             android:summary="@string/password_summary"
-            android:defaultValue="iamabot!"/>
+            android:defaultValue=""/>
         <EditTextPreference
             android:title="@string/server_host_title"
             android:key="serverHost"

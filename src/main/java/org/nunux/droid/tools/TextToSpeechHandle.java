@@ -1,17 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.nunux.droid.tools;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import java.util.Locale;
+import org.nunux.droid.service.DroidService;
 
 /**
- *
- * @author fr23972
+ * TTS handler.
+ * @author Nicolas Carlier
  */
 public class TextToSpeechHandle {
 
@@ -30,13 +27,13 @@ public class TextToSpeechHandle {
                             if (result == TextToSpeech.LANG_MISSING_DATA
                                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                                 // Lanuage data is missing or the language is not supported.
-                                Log.e("Droid", "Language is not available.");
+                                Log.e(DroidService.TAG, "Language is not available.");
                             } else {
-                                Log.i("Droid", "TextToSpeech initialized.");
+                                Log.i(DroidService.TAG, "TextToSpeech initialized.");
                             }
                         } else {
                             // Initialization failed.
-                            Log.e("Droid", "Could not initialize TextToSpeech.");
+                            Log.e(DroidService.TAG, "Could not initialize TextToSpeech.");
                         }
                     }
                 });
