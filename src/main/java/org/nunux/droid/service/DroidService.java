@@ -26,6 +26,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.nunux.droid.Preferences;
 import org.nunux.droid.R;
 import org.nunux.droid.command.AlarmCmd;
+import org.nunux.droid.command.CallLogCmd;
 import org.nunux.droid.command.CopyCmd;
 import org.nunux.droid.command.HelpCmd;
 import org.nunux.droid.command.LocationCmd;
@@ -42,7 +43,7 @@ import org.nunux.droid.tools.CommandRegistrationHelper;
  * @author Nicolas Carlier
  */
 public class DroidService extends Service {
-    public final static String TAG = "DOID";
+    public final static String TAG = "DROID";
 
     /** For showing and hiding our notification. */
     NotificationManager mNM;
@@ -203,6 +204,7 @@ public class DroidService extends Service {
 //            mCommandRegister = new CommandRegistrationHelper("org.nunux.droid.command", this);
             mCommandRegistrationHelper = new CommandRegistrationHelper(this,
                     AlarmCmd.class,
+                    CallLogCmd.class,
                     CopyCmd.class,
                     LocationCmd.class,
                     SmsCmd.class,
