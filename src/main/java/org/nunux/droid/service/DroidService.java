@@ -236,6 +236,7 @@ public class DroidService extends Service {
         try {
             new CommandCLI(getCommands()).execute(commandLine);
         } catch (InvalidSyntaxException e) {
+            this.send("Unable to execute command line: " + commandLine);
             Log.e(TAG, "Unable to execute command line: " + commandLine, e);
         }
     }
@@ -249,7 +250,6 @@ public class DroidService extends Service {
                 && mConnection.isConnected()
                 && mConnection.isAuthenticated());
     }
-
 
     /**
      * Send XMPP message.
