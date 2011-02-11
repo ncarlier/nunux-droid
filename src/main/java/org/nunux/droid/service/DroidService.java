@@ -29,6 +29,7 @@ import org.nunux.droid.command.AlarmCmd;
 import org.nunux.droid.command.CallLogCmd;
 import org.nunux.droid.command.CopyCmd;
 import org.nunux.droid.command.HelpCmd;
+import org.nunux.droid.command.IpCmd;
 import org.nunux.droid.command.LocationCmd;
 import org.nunux.droid.command.SmsCmd;
 import org.nunux.droid.command.TextToSpeechCmd;
@@ -206,6 +207,7 @@ public class DroidService extends Service {
                     AlarmCmd.class,
                     CallLogCmd.class,
                     CopyCmd.class,
+                    IpCmd.class,
                     LocationCmd.class,
                     SmsCmd.class,
                     TextToSpeechCmd.class,
