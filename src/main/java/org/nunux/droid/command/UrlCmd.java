@@ -16,7 +16,7 @@ public class UrlCmd extends Command {
 
     public UrlCmd(final DroidService service) throws InvalidSyntaxException {
         super("^(https?://.+)$",
-            "<URL>\nOpen URL into devide browser.",
+            "<URL> : Open URL into devide browser.",
             new ICommandExecutor() {
                 public void execute(List<String> args) {
                     if (args.size() > 0) {

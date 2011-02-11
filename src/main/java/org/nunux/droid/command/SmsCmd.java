@@ -17,7 +17,7 @@ public class SmsCmd extends Command {
 
     public SmsCmd(final DroidService service) throws InvalidSyntaxException {
         super("^sms ([0-9]+) (.+)",
-            "sms <num> <text>\nSend a SMS to a phone number.",
+            "sms <num> <text> : Send a SMS to a phone number.",
             new ICommandExecutor() {
                 public void execute(List<String> args) {
                     if (args.size() > 1) {

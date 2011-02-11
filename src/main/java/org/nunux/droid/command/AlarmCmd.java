@@ -20,7 +20,7 @@ public class AlarmCmd extends Command {
 
     public AlarmCmd(final DroidService service) throws InvalidSyntaxException {
         super("^alarm (start|stop)$",
-            "alarm <start|stop>\nStart or stop ringing the phone.",
+            "alarm <start|stop> : Start or stop ringing the phone.",
             null);
 
         mMediaPlayer = new MediaPlayer();

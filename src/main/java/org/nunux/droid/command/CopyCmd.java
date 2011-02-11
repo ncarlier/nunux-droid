@@ -17,7 +17,7 @@ public class CopyCmd extends Command {
 
     public CopyCmd(final DroidService service) throws InvalidSyntaxException {
         super("^copy (.+)",
-            "copy <text>\nCopy text into clipboard.",
+            "copy <text> : Copy text into clipboard.",
             new ICommandExecutor() {
                 public void execute(List<String> args) {
                     if (args.size() > 0) {

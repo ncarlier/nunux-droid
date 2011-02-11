@@ -14,7 +14,7 @@ public class HelpCmd extends Command {
 
     public HelpCmd(final DroidService service) throws InvalidSyntaxException {
         super("^help$",
-            "help\nPrint help.",
+            "help : Print help.",
             new ICommandExecutor() {
                 public void execute(List<String> args) {
                     List<Command> commands = service.getCommands();

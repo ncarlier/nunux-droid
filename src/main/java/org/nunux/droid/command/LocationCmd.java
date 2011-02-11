@@ -17,7 +17,7 @@ public class LocationCmd extends Command {
 
     public LocationCmd(final DroidService service) throws InvalidSyntaxException {
         super("^location$",
-                "location\nLocate the phone and return google maps link.",
+                "location : Locate the phone and return google maps link.",
                 new ICommandExecutor() {
                     public void execute(List<String> args) {
                         try {

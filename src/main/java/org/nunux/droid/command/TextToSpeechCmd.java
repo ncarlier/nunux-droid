@@ -15,7 +15,7 @@ public class TextToSpeechCmd extends Command {
 
     public TextToSpeechCmd(final DroidService service) throws InvalidSyntaxException {
         super("^tell (.+)",
-                "tell <text>\nUse TTS phone feature to tell something.",
+                "tell <text> : Use TTS phone feature to tell something.",
                 null);
 
         final TextToSpeechHandle handle = new TextToSpeechHandle(service);
