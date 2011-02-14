@@ -58,6 +58,7 @@ public class CallLogCmd extends Command {
                                     service.send(output.toString());
                                 }
                             }
+                            c.close();
                         }
                     }
                 });
