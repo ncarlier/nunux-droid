@@ -28,10 +28,12 @@ import org.nunux.droid.R;
 import org.nunux.droid.command.AlarmCmd;
 import org.nunux.droid.command.CallLogCmd;
 import org.nunux.droid.command.CopyCmd;
+import org.nunux.droid.command.CallCmd;
 import org.nunux.droid.command.HelpCmd;
 import org.nunux.droid.command.IpCmd;
 import org.nunux.droid.command.LocationCmd;
 import org.nunux.droid.command.SmsCmd;
+import org.nunux.droid.command.SmsLogCmd;
 import org.nunux.droid.command.TextToSpeechCmd;
 import org.nunux.droid.command.UrlCmd;
 import org.nunux.droid.command.common.Command;
@@ -205,11 +207,13 @@ public class DroidService extends Service {
 //            mCommandRegister = new CommandRegistrationHelper("org.nunux.droid.command", this);
             mCommandRegistrationHelper = new CommandRegistrationHelper(this,
                     AlarmCmd.class,
+                    CallCmd.class,
                     CallLogCmd.class,
                     CopyCmd.class,
                     IpCmd.class,
                     LocationCmd.class,
                     SmsCmd.class,
+                    SmsLogCmd.class,
                     TextToSpeechCmd.class,
                     UrlCmd.class,
                     HelpCmd.class);
@@ -236,7 +240,7 @@ public class DroidService extends Service {
         try {
             new CommandCLI(getCommands()).execute(commandLine);
         } catch (InvalidSyntaxException e) {
-            this.send("Unable to execute command line: " + commandLine);
+            this.send("Command '" + commandLine + "' unknown. Type 'help' to see available commands.");
             Log.e(TAG, "Unable to execute command line: " + commandLine, e);
         }
     }
